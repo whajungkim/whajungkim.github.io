@@ -99,16 +99,14 @@ function indexAtPin(){ // pin at top; segment i centered at angle+i*SEG-PI/2
   let a=(-angle)%(Math.PI*2); if(a<0)a+=Math.PI*2; return Math.round(a/SEG)%N;
 }
 function rnd(n){const u=new Uint32Array(1);crypto.getRandomValues(u);return u[0]%n}
-let lastTs=0; const K=1.9;  // 초당 감속 계수(기기 속도와 무관)
+let lastTs=0; const K=1.6, STOP_SEC=3.2;  // 감속은 시각 기준 해석식 → 기기 속도와 무관하게 3.2초에 멈춘다
+let t0=0,a0=0,v0=0,goal=0;
 function loop(ts){
-  const dt=lastTs?Math.min(0.05,(ts-lastTs)/1000):0.016; lastTs=ts;
+  const dt=lastTs?Math.min(0.1,(ts-lastTs)/1000):0.016; lastTs=ts;
   if(state==='spinning'){angle+=vel*dt;}
   else if(state==='stopping'){
-    vel*=Math.exp(-K*dt); angle+=vel*dt;
-    if(vel<0.25){ // snap to segment center
-      const k=indexAtPin(); const goal=-k*SEG; let d=((goal-angle)%(Math.PI*2)+Math.PI*3)%(Math.PI*2)-Math.PI; angle+=d*Math.min(1,10*dt);
-      if(Math.abs(d)<0.002){angle=goal;state='done';finish(k,target);return draw();}
-    }
+    const t=(ts-t0)/1000; angle=a0+(v0/K)*(1-Math.exp(-K*t));
+    if(t>=STOP_SEC){angle=goal;state='done';finish(indexAtPin(),target);return draw();}
   }
   draw(); raf=requestAnimationFrame(loop);
 }
@@ -121,12 +119,12 @@ function start(){
 }
 function stop(by){
   if(state!=='spinning')return; clearTimeout(autoTimer); target=by;
-  if(by==='회전판'){ // true random pick, then decelerate so it lands there
-    const k=rnd(N); const goal=-k*SEG; let cur=angle%(Math.PI*2); let dist=((goal-cur)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)+Math.PI*2*1;
-    // 지수 감속의 총 회전각 = vel/K 이므로 vel=dist*K 로 두면 그 칸에 멈춘다
-    vel=dist*K; state='stopping';
-  } else { state='stopping'; }
-  hint.textContent='…';
+  t0=performance.now(); a0=angle;
+  let k; if(by==='회전판'){ k=rnd(N); }                       // 안 멈추면: 운영체제 난수로 칸을 정한다
+  else { const fin=a0+vel/K; let a=(-fin)%(Math.PI*2); if(a<0)a+=Math.PI*2; k=Math.round(a/SEG)%N; }  // 내가 멈추면: 지금 속도로 자연히 멈출 칸
+  // 목표각 = 그 칸의 중심 중, 진행 방향으로 최소 1바퀴 이상 앞에 있는 것
+  goal=-k*SEG; while(goal<a0+Math.PI*2) goal+=Math.PI*2;
+  v0=(goal-a0)*K; state='stopping'; hint.textContent='…';
 }
 function finish(k,by){
   const m=labels[k]; menuEl.textContent=m;
