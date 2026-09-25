@@ -122,7 +122,7 @@ function start(){
 function stop(by){
   if(state!=='spinning')return; clearTimeout(autoTimer); target=by;
   if(by==='회전판'){ // true random pick, then decelerate so it lands there
-    const k=rnd(N); const goal=-k*SEG; let cur=angle%(Math.PI*2); let dist=((goal-cur)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)+Math.PI*2*2;
+    const k=rnd(N); const goal=-k*SEG; let cur=angle%(Math.PI*2); let dist=((goal-cur)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)+Math.PI*2*1;
     // 지수 감속의 총 회전각 = vel/K 이므로 vel=dist*K 로 두면 그 칸에 멈춘다
     vel=dist*K; state='stopping';
   } else { state='stopping'; }
