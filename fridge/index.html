@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>[hidden]{display:none!important}</style>
-<title>오늘 뭐 해 먹지? 집밥 회전판 · 무엇이든 정해드림</title>
-<meta name="description" content="집밥 저녁메뉴 추천 룰렛(돌림판). 저녁 뭐 해 먹지 못 정하겠으면 탭해서 돌리고 탭해서 멈춥니다. 한식·중식·일식·양식, 계란·두부·김치·스팸으로 좁힐 수 있고, 멈춘 요리의 재료·순서·시간이 바로 나옵니다.">
+<title>냉장고에 이것 있으면? 회전판 · 무엇이든 정해드림</title>
+<meta name="description" content="냉장고에 있는 재료로 저녁메뉴 추천 룰렛(돌림판). 계란·두부·김치·스팸 중 있는 것을 고르고 탭해서 돌리면, 그 재료로 되는 요리와 레시피가 나옵니다.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap">
 <style>
 :root{
@@ -47,14 +47,13 @@ canvas{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 10px 
 </head>
 <body>
 <p class="brandline"><a href="../">무엇이든 정해드림</a> · 無를 有로</p>
-<h1>오늘 뭐 해 먹지?</h1>
-<div class="cats" id="cats" role="group" aria-label="분류">
+<h1>냉장고에 이것 있으면?</h1>
+<div class="cats" id="cats" role="group" aria-label="재료">
   <div class="row">
-    <button type="button" data-cat="전체" aria-pressed="true">전체</button>
-    <button type="button" data-cat="한식" aria-pressed="false">한식</button>
-    <button type="button" data-cat="중식" aria-pressed="false">중식</button>
-    <button type="button" data-cat="일식" aria-pressed="false">일식</button>
-    <button type="button" data-cat="양식" aria-pressed="false">양식</button>
+    <button type="button" data-cat="계란" aria-pressed="true">계란</button>
+    <button type="button" data-cat="두부" aria-pressed="false">두부</button>
+    <button type="button" data-cat="김치" aria-pressed="false">김치</button>
+    <button type="button" data-cat="스팸" aria-pressed="false">스팸·햄</button>
   </div>
 </div>
 <div class="stage">
@@ -70,7 +69,7 @@ canvas{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 10px 
     <button type="button" class="again" id="again">한 번 더</button>
   </div>
 </div>
-<p class="foot">안 멈추시면 6초 뒤 회전판이 스스로 멈춥니다. 그 결과도 진짜 무작위입니다. 재료는 2인분 기준. 냉장고에 있는 재료로 고르려면 <a href="../fridge/">냉장고 회전판</a>.</p>
+<p class="foot">안 멈추시면 6초 뒤 회전판이 스스로 멈춥니다. 그 결과도 진짜 무작위입니다. 재료는 2인분 기준. 나라별로 고르려면 <a href="../cook/">집밥 회전판</a>.</p>
 <div class="yt"><a href="../">다른 방 보기</a><a class="sub" href="https://www.youtube.com/channel/UCss72-MAR4751_4vekHP4Hw?sub_confirmation=1" target="_blank" rel="noopener">유튜브 구독</a></div>
 
 <script>
@@ -174,7 +173,7 @@ const MIX=["김치찌개","마파두부","규동","토마토파스타","제육�
 const COLORS=["--w1","--w2","--w3","--w4","--w5","--w6","--w7","--w8","--w9","--w10","--w11","--w12"];
 const cv=document.getElementById('wheel'),ctx=cv.getContext('2d');
 const hint=document.getElementById('hint'),result=document.getElementById('result'),menuEl=document.getElementById('menu'),whoEl=document.getElementById('who'),recEl=document.getElementById('recipe');
-let labels=MIX.slice(),angle=0,vel=0,state='idle',autoTimer=null,raf=null,target=null;
+let labels=SETS['계란'].slice(),angle=0,vel=0,state='idle',autoTimer=null,raf=null,target=null;
 let N=labels.length,SEG=Math.PI*2/N;
 function setLabels(a){labels=a.slice();N=labels.length;SEG=Math.PI*2/N;}
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
