@@ -35,7 +35,7 @@ canvas{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 10px 
 .result .who{font-size:14px;color:var(--muted)}
 .recipe{width:100%;text-align:left;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
 .recipe .time{font-weight:700;color:var(--red);font-size:15px}
-.recipe h3{margin:0;font-size:15px;color:var(--muted);letter-spacing:.06em}
+.recipe h3{margin:0;font-size:15px;color:var(--muted);letter-spacing:.06em}.recipe .note{font-size:13px;color:var(--muted)}
 .recipe ul,.recipe ol{margin:0;padding-left:20px;font-size:16px;line-height:1.55}
 .recipe li{margin:2px 0}
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -67,6 +67,8 @@ canvas{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 10px 
   <div class="menu" id="menu"></div>
   <div class="recipe" id="recipe"></div>
   <div class="actions">
+    <a id="naver" href="#" target="_blank" rel="noopener">네이버에서 자세한 레시피</a>
+    <a id="yt" href="#" target="_blank" rel="noopener">유튜브 영상으로</a>
     <button type="button" class="again" id="again">한 번 더</button>
   </div>
 </div>
@@ -227,7 +229,10 @@ function finish(k,by){
     const ul=document.createElement('ul'); r.i.forEach(x=>{const li=document.createElement('li'); li.textContent=x; ul.appendChild(li);}); recEl.appendChild(ul);
     const h2=document.createElement('h3'); h2.textContent='순서'; recEl.appendChild(h2);
     const ol=document.createElement('ol'); r.s.forEach(x=>{const li=document.createElement('li'); li.textContent=x; ol.appendChild(li);}); recEl.appendChild(ol);
+    const nt=document.createElement('div'); nt.className='note'; nt.textContent='요약본입니다. 분량·불 조절은 아래 검색에서 자세히.'; recEl.appendChild(nt);
   }
+  document.getElementById('naver').href='https://search.naver.com/search.naver?query='+encodeURIComponent(m+' 레시피');
+  document.getElementById('yt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(m+' 만들기');
   result.hidden=false; hint.innerHTML='오늘은 <em>'+m+'</em>';
 }
 cv.addEventListener('click',start);
