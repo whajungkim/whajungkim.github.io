@@ -71,21 +71,22 @@ const SETS={
   일식:["초밥","돈가스","라멘","우동","규동","가츠동","오코노미야키","사시미","텐동","가라아게","오므라이스","연어덮밥"],
   양식:["파스타","피자","햄버거","스테이크","리조또","샐러드","샌드위치","오믈렛","치킨","타코","그라탕","수프"]
 };
-const MIX=["김치찌개","초밥","짬뽕","파스타","제육볶음","돈가스","마라탕","햄버거","칼국수","라멘","짜장면","피자"];
+const MIX=["김치찌개","짜장면","초밥","파스타","제육볶음","짬뽕","돈가스","피자","비빔밥","탕수육","라멘","햄버거","냉면","마라탕","우동","스테이크","국밥","볶음밥","규동","샐러드","칼국수","딤섬","연어덮밥","치킨","떡볶이"];
 const COLORS=["--w1","--w2","--w3","--w4","--w5","--w6","--w7","--w8","--w9","--w10","--w11","--w12"];
 const cv=document.getElementById('wheel'),ctx=cv.getContext('2d');
 const hint=document.getElementById('hint'),result=document.getElementById('result'),menuEl=document.getElementById('menu'),whoEl=document.getElementById('who'),go=document.getElementById('go');
 let labels=MIX.slice(),angle=0,vel=0,state='idle',autoTimer=null,raf=null,target=null;
-const N=12,SEG=Math.PI*2/N;
+let N=labels.length,SEG=Math.PI*2/N;
+function setLabels(a){labels=a.slice();N=labels.length;SEG=Math.PI*2/N;}
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function draw(){
   const R=cv.width/2,cx=R,cy=R; ctx.clearRect(0,0,cv.width,cv.height);
   for(let i=0;i<N;i++){
     const a0=angle+i*SEG-Math.PI/2-SEG/2,a1=a0+SEG;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R-6,a0,a1);ctx.closePath();
-    ctx.fillStyle=css(COLORS[i]);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=css(COLORS[i%((N%12===1)?11:12)]);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=2;ctx.stroke();
     ctx.save();ctx.translate(cx,cy);ctx.rotate(a0+SEG/2);ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillStyle='#fff';ctx.font='bold 34px "Noto Sans KR",sans-serif';ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=4;
+    ctx.fillStyle='#fff';ctx.font='bold '+(N>16?24:34)+'px "Noto Sans KR",sans-serif';ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=4;
     ctx.fillText(labels[i],R-28,0);ctx.restore();
   }
   ctx.beginPath();ctx.arc(cx,cy,34,0,Math.PI*2);ctx.fillStyle=css('--ink');ctx.fill();
@@ -132,7 +133,7 @@ document.getElementById('again').addEventListener('click',start);
 document.getElementById('cats').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b||state==='spinning'||state==='stopping')return;
   document.querySelectorAll('#cats button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
-  labels=(b.dataset.cat==='전체'?MIX:SETS[b.dataset.cat]).slice(); angle=0; result.hidden=true; state='idle';
+  setLabels(b.dataset.cat==='전체'?MIX:SETS[b.dataset.cat]); angle=0; result.hidden=true; state='idle';
   hint.innerHTML='회전판을 <em>탭</em>하면 돕니다'; draw();
 });
 document.fonts?.ready.then(draw); draw();
