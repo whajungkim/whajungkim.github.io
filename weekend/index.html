@@ -38,7 +38,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 .result{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;width:min(92vw,400px);box-sizing:border-box}
 .pl{display:flex;align-items:center;gap:10px;font-size:17px}
 .pl .dot{width:14px;height:14px;border-radius:50%;flex:none}
-.pl.win{font-weight:700}
+.pl.win{font-weight:700}.pl .pick{margin-left:auto;padding:5px 10px;font-size:13px}
 .final{text-align:center;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .final .who{font-size:14px;color:var(--muted)}
 .final .menu{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:clamp(30px,9vw,46px);line-height:1.1}
@@ -56,7 +56,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 <body>
 <p class="brandline"><a href="../">무엇이든 정해드림</a> · 無를 有로</p>
 <h1>주말에 뭐 하지?</h1>
-<p class="rules">누구와 · 몇 명 고르기 → 줄 고르기 → 타기 → 여럿이면 가위바위보 → 나온 미션 하기. 패스권은 한 장.</p>
+<p class="rules">누구와 · 몇 명 고르기 → 줄 고르기(아이부터) → 타기 → 여럿이면 하나 고르기(아이 것 우선, 못 정하면 가위바위보) → 미션 하기. 패스권은 한 장.</p>
 <div class="row" id="cats" role="group" aria-label="누구와">
   <button type="button" class="chip" data-cat="혼자" aria-pressed="true">혼자</button>
   <button type="button" class="chip" data-cat="둘이" aria-pressed="false">둘이</button>
@@ -79,7 +79,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 </div>
 <div class="result" id="result" hidden>
   <div id="list"></div>
-  <div class="btns" id="rpsWrap" hidden><button type="button" class="btn red" id="rps">누구 걸로 할지 가위바위보</button></div>
+  <div class="btns" id="rpsWrap" hidden><button type="button" class="btn red" id="rps">못 정하겠으면 가위바위보</button></div>
   <div class="final" id="final" hidden>
     <div class="who" id="who"></div>
     <div class="menu" id="menu"></div>
@@ -225,8 +225,8 @@ function ride(){
 }
 function finishRide(){
   state='done'; list.innerHTML=''; result.hidden=false;
-  outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; list.appendChild(d); });
-  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>가위바위보</em>로 하나만'; }
+  outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; if(np>1){ const b=document.createElement('button'); b.type='button'; b.className='btn pick'; b.textContent='이걸로'; b.addEventListener('click',()=>{ [...list.children].forEach((el,j)=>el.classList.toggle('win',outcome[j]===o)); showFinal(o,(o.p+1)+'번 것으로 정했습니다'); hint.innerHTML='오늘은 <em>'+o.m.n+'</em>'; }); d.appendChild(b);} list.appendChild(d); });
+  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>이걸로</em>를 누르거나 가위바위보'; }
   else { showFinal(outcome[0],'사다리가 정한 것'); hint.innerHTML='오늘은 <em>'+outcome[0].m.n+'</em>'; }
   document.getElementById('pass').hidden=passUsed; document.getElementById('auto').disabled=false;
   result.scrollIntoView({behavior:'smooth',block:'start'});
