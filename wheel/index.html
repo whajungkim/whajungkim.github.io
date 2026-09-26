@@ -17,7 +17,7 @@
   :root:not([data-theme="light"]){ color-scheme:dark; --bg:#17150f; --ink:#f3ede2; --muted:#a79f92; --line:#33302a; --card:#221f19; }
 }
 :root[data-theme="dark"]{ color-scheme:dark; --bg:#17150f; --ink:#f3ede2; --muted:#a79f92; --line:#33302a; --card:#221f19; }
-html,body{height:100%}
+html{height:100%}body{min-height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;padding-inline:16px;padding-block:12px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;box-sizing:border-box}
 h1{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-size:clamp(30px,8vw,44px);margin:4px 0 0;letter-spacing:.5px;color:var(--ink);text-wrap:balance}
 .cats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
