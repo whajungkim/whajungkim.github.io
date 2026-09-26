@@ -226,7 +226,7 @@ function ride(){
 function finishRide(){
   state='done'; list.innerHTML=''; result.hidden=false;
   outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; if(np>1){ const k=document.createElement('button'); k.type='button'; k.className='btn kid'; k.textContent='아이'; k.setAttribute('aria-pressed','false'); k.title='아이 줄 표시: 아이들끼리 가위바위보'; k.addEventListener('click',()=>{ const on=k.getAttribute('aria-pressed')!=='true'; k.setAttribute('aria-pressed',on?'true':'false'); o.kid=on; }); d.appendChild(k); const b=document.createElement('button'); b.type='button'; b.className='btn pick'; b.textContent='이걸로'; b.addEventListener('click',()=>{ [...list.children].forEach((el,j)=>el.classList.toggle('win',outcome[j]===o)); showFinal(o,(o.p+1)+'번 것으로 정했습니다'); hint.innerHTML='오늘은 <em>'+o.m.n+'</em>'; }); d.appendChild(b);} list.appendChild(d); });
-  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>이걸로</em>를 누르거나, 아이 줄에 <em>아이</em> 표시 뒤 가위바위보'; }
+  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개 나왔습니다. <em>이걸로</em> 또는 가위바위보'; }
   else { showFinal(outcome[0],'사다리가 정한 것'); hint.innerHTML='오늘은 <em>'+outcome[0].m.n+'</em>'; }
   document.getElementById('pass').hidden=passUsed; document.getElementById('auto').disabled=false;
   result.scrollIntoView({behavior:'smooth',block:'start'});
