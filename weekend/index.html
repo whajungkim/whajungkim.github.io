@@ -38,7 +38,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 .result{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;width:min(92vw,400px);box-sizing:border-box}
 .pl{display:flex;align-items:center;gap:10px;font-size:17px}
 .pl .dot{width:14px;height:14px;border-radius:50%;flex:none}
-.pl.win{font-weight:700}.pl .pick{margin-left:auto;padding:5px 10px;font-size:13px}
+.pl.win{font-weight:700}.pl .pick{padding:5px 10px;font-size:13px}.pl .kid{margin-left:auto;padding:5px 9px;font-size:12px;color:var(--muted)}.pl .kid[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .final{text-align:center;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .final .who{font-size:14px;color:var(--muted)}
 .final .menu{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:clamp(30px,9vw,46px);line-height:1.1}
@@ -79,7 +79,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 </div>
 <div class="result" id="result" hidden>
   <div id="list"></div>
-  <div class="btns" id="rpsWrap" hidden><button type="button" class="btn red" id="rps">못 정하겠으면 가위바위보</button></div>
+  <div class="btns" id="rpsWrap" hidden><button type="button" class="btn red" id="rps">가위바위보 (아이 표시가 있으면 아이들끼리)</button></div>
   <div class="final" id="final" hidden>
     <div class="who" id="who"></div>
     <div class="menu" id="menu"></div>
@@ -225,15 +225,15 @@ function ride(){
 }
 function finishRide(){
   state='done'; list.innerHTML=''; result.hidden=false;
-  outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; if(np>1){ const b=document.createElement('button'); b.type='button'; b.className='btn pick'; b.textContent='이걸로'; b.addEventListener('click',()=>{ [...list.children].forEach((el,j)=>el.classList.toggle('win',outcome[j]===o)); showFinal(o,(o.p+1)+'번 것으로 정했습니다'); hint.innerHTML='오늘은 <em>'+o.m.n+'</em>'; }); d.appendChild(b);} list.appendChild(d); });
-  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>이걸로</em>를 누르거나 가위바위보'; }
+  outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; if(np>1){ const k=document.createElement('button'); k.type='button'; k.className='btn kid'; k.textContent='아이'; k.setAttribute('aria-pressed','false'); k.title='아이 줄 표시: 아이들끼리 가위바위보'; k.addEventListener('click',()=>{ const on=k.getAttribute('aria-pressed')!=='true'; k.setAttribute('aria-pressed',on?'true':'false'); o.kid=on; }); d.appendChild(k); const b=document.createElement('button'); b.type='button'; b.className='btn pick'; b.textContent='이걸로'; b.addEventListener('click',()=>{ [...list.children].forEach((el,j)=>el.classList.toggle('win',outcome[j]===o)); showFinal(o,(o.p+1)+'번 것으로 정했습니다'); hint.innerHTML='오늘은 <em>'+o.m.n+'</em>'; }); d.appendChild(b);} list.appendChild(d); });
+  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>이걸로</em>를 누르거나, 아이 줄에 <em>아이</em> 표시 뒤 가위바위보'; }
   else { showFinal(outcome[0],'사다리가 정한 것'); hint.innerHTML='오늘은 <em>'+outcome[0].m.n+'</em>'; }
   document.getElementById('pass').hidden=passUsed; document.getElementById('auto').disabled=false;
   result.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.getElementById('rps').addEventListener('click',()=>{
   const btn=document.getElementById('rps'); btn.disabled=true; const seq=['가위…','바위…','보!']; let i=0;
-  const t=setInterval(()=>{ btn.textContent=seq[i++]; if(i>=seq.length){ clearInterval(t); const w=outcome[rnd(outcome.length)]; btn.textContent=(w.p+1)+'번 승리!'; [...list.children].forEach((el,j)=>el.classList.toggle('win',j===outcome.indexOf(w))); showFinal(w,(w.p+1)+'번이 이겼습니다'); } },450);
+  const t=setInterval(()=>{ btn.textContent=seq[i++]; if(i>=seq.length){ clearInterval(t); const cand=outcome.filter(o=>o.kid); const pool=cand.length?cand:outcome; const w=pool[rnd(pool.length)]; btn.textContent=(w.p+1)+'번 승리!'+(cand.length?' (아이들끼리)':''); [...list.children].forEach((el,j)=>el.classList.toggle('win',j===outcome.indexOf(w))); showFinal(w,(w.p+1)+'번이 이겼습니다'); } },450);
 });
 function showFinal(o,who){
   final.hidden=false; document.getElementById('who').textContent=who; document.getElementById('menu').textContent=o.m.n;
