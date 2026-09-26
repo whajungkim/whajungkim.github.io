@@ -170,14 +170,14 @@ const M={
 const PC=['--p1','--p2','--p3','--p4'];
 const cv=document.getElementById('ladder'),ctx=cv.getContext('2d');
 const hint=document.getElementById('hint'),result=document.getElementById('result'),list=document.getElementById('list'),rpsWrap=document.getElementById('rpsWrap'),final=document.getElementById('final');
-let cat='혼자',np=1,R=5,H=9,rungs=[],slots=[],assign=[],paths=[],state='pick',passUsed=false,prog=[],outcome=[];
+let cat='혼자',np=1,R=5,H=11,rungs=[],slots=[],assign=[],paths=[],state='pick',passUsed=false,prog=[],outcome=[];
 const W=cv.width,Hh=cv.height,TOP=110,BOT=760,LEFT=90,RIGHT=W-90;
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function rnd(n){const u=new Uint32Array(1);crypto.getRandomValues(u);return u[0]%n}
 function railX(i){return LEFT+(RIGHT-LEFT)*i/(R-1)}
 function rowY(y){return TOP+(BOT-TOP)*(y+1)/(H+1)}
 function build(){
-  rungs=[]; for(let y=0;y<H;y++){const row=[]; for(let i=0;i<R-1;i++){ const left=row[i-1]; row.push(!left && rnd(100)<38);} rungs.push(row);}
+  rungs=[]; for(let y=0;y<H;y++){let row; do{ row=[]; for(let i=0;i<R-1;i++){ const left=row[i-1]; row.push(!left && rnd(100)<55);} }while(!row.some(Boolean)); rungs.push(row);}
   const pool=M[cat].slice(); slots=[]; for(let i=0;i<R;i++){ slots.push(pool.splice(rnd(pool.length),1)[0]); }
   assign=Array(R).fill(-1); paths=[]; prog=[]; outcome=[]; state='pick'; result.hidden=true; final.hidden=true; rpsWrap.hidden=true;
   document.getElementById('ride').disabled=true; document.getElementById('pass').hidden=true;
@@ -196,13 +196,13 @@ function draw(){
   // 아래 미션 상자
   for(let i=0;i<R;i++){ const done=outcome.find(o=>o.end===i); const x=railX(i); ctx.fillStyle=done?css(PC[done.p]):css('--bg'); ctx.strokeStyle=css('--line'); ctx.lineWidth=3;
     roundRect(x-62,BOT+18,124,96,14); ctx.fill(); ctx.stroke();
-    ctx.fillStyle=done?'#fff':css('--muted'); ctx.font=(done?'bold 22px':'bold 40px')+' "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    if(done){ wrapText(shortName(slots[i].n),x,BOT+66,110,26);} else ctx.fillText('?',x,BOT+66); }
+    ctx.fillStyle=done?'#fff':css('--muted'); ctx.font=(done?'bold 19px':'bold 40px')+' "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(done){ wrapText(shortName(slots[i].n),x,BOT+66,112,22);} else ctx.fillText('?',x,BOT+66); }
   // 진행 중 경로
   for(let k=0;k<paths.length;k++){ const pr=prog[k]||0; if(pr<=0)continue; const pts=paths[k].pts; ctx.strokeStyle=css(PC[k]); ctx.lineWidth=10; ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); const n=Math.floor(pr); for(let j=1;j<=Math.min(n,pts.length-1);j++) ctx.lineTo(pts[j][0],pts[j][1]); if(n<pts.length-1){ const a=pts[n],b=pts[n+1],f=pr-n; ctx.lineTo(a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f);} ctx.stroke(); }
 }
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-function shortName(s){return s.length>14?s.slice(0,13)+'…':s}
+function shortName(s){return s}
 function wrapText(t,x,y,maxw,lh){ const words=t.split(' '); let line='',lines=[]; for(const w of words){const c=(line+' '+w).trim(); if(ctx.measureText(c).width>maxw&&line){lines.push(line);line=w;}else line=c;} lines.push(line); const y0=y-(lines.length-1)*lh/2; lines.forEach((l,i)=>ctx.fillText(l,x,y0+i*lh)); }
 cv.addEventListener('click',e=>{
   if(state!=='pick')return; const rect=cv.getBoundingClientRect(); const x=(e.clientX-rect.left)*W/rect.width, y=(e.clientY-rect.top)*Hh/rect.height;
