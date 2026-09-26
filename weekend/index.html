@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>주말 사다리 · 무엇이든 정해드림</title>
+<meta name="description" content="주말에 뭐 하지? 사다리타기로 정합니다. 혼자·둘이·아이랑·집에서·조용히 다섯 판, 식구 수만큼 줄을 고르면 미션이 나오고, 여럿이면 가위바위보로 하나를 정합니다. 패스권은 한 장.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#fbf7ef; --ink:#1d1a16; --muted:#6b645a; --line:#e6ded0;
+  --accent:#e8b400; --accent-ink:#1d1a16; --card:#ffffff; --red:#e0453a;
+  --p1:#e0453a; --p2:#2b7fd1; --p3:#5cb85c; --p4:#c2409a;
+}
+@media (prefers-color-scheme: dark){
+  :root{ color-scheme:dark; --bg:#17150f; --ink:#f3ede2; --muted:#a79f92; --line:#33302a; --card:#221f19; }
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;padding-inline:16px;padding-block:12px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;box-sizing:border-box}
+.brandline{margin:0;font-size:14px;color:var(--muted);letter-spacing:.08em}.brandline a{color:inherit;text-decoration:none;font-weight:700}
+h1{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-size:clamp(30px,8vw,44px);margin:4px 0 0;letter-spacing:.5px;color:var(--ink);text-wrap:balance}
+.row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}
+.lab{font-size:12px;color:var(--muted);letter-spacing:.08em;margin-right:2px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stage{width:min(92vw,400px);max-width:100%}
+canvas{width:100%;display:block;border-radius:16px;background:var(--card);border:1px solid var(--line);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hint{font-size:17px;font-weight:700;text-align:center;margin:0;min-height:1.4em}
+.hint em{font-style:normal;color:var(--accent);background:var(--ink);padding:0 6px;border-radius:4px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:inherit;font-weight:700;font-size:16px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none}
+.btn.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.result{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;width:min(92vw,400px);box-sizing:border-box}
+.pl{display:flex;align-items:center;gap:10px;font-size:17px}
+.pl .dot{width:14px;height:14px;border-radius:50%;flex:none}
+.pl.win{font-weight:700}
+.final{text-align:center;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.final .who{font-size:14px;color:var(--muted)}
+.final .menu{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:clamp(30px,9vw,46px);line-height:1.1}
+.tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tag{font-size:14px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.tag.money{color:var(--red)}
+.prep{font-size:15px;color:var(--muted)}
+.stamps{display:flex;gap:8px;justify-content:center;align-items:center;font-size:14px;color:var(--muted)}
+.stamp{width:34px;height:34px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-size:18px}
+.stamp.on{border-style:solid;border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:0}.foot a{color:var(--ink);font-weight:700}
+.yt{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.yt a{font-weight:700;font-size:15px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none}.yt a.sub{background:#e0453a;color:#fff;border-color:#e0453a}
+</style>
+</head>
+<body>
+<p class="brandline"><a href="../">무엇이든 정해드림</a> · 無를 有로</p>
+<h1>주말에 뭐 하지?</h1>
+<div class="row" id="cats" role="group" aria-label="누구와">
+  <button type="button" class="chip" data-cat="혼자" aria-pressed="true">혼자</button>
+  <button type="button" class="chip" data-cat="둘이" aria-pressed="false">둘이</button>
+  <button type="button" class="chip" data-cat="아이랑" aria-pressed="false">아이랑</button>
+  <button type="button" class="chip" data-cat="집에서" aria-pressed="false">집에서</button>
+  <button type="button" class="chip" data-cat="조용히" aria-pressed="false">조용히</button>
+</div>
+<div class="row" id="players" role="group" aria-label="사람 수"><span class="lab">사람 수</span>
+  <button type="button" class="chip" data-n="1" aria-pressed="true">1</button>
+  <button type="button" class="chip" data-n="2" aria-pressed="false">2</button>
+  <button type="button" class="chip" data-n="3" aria-pressed="false">3</button>
+  <button type="button" class="chip" data-n="4" aria-pressed="false">4</button>
+</div>
+<div class="stage"><canvas id="ladder" width="800" height="900" aria-label="사다리. 위의 번호를 탭해 줄을 고르고 타기를 누릅니다."></canvas></div>
+<p class="hint" id="hint">위의 <em>번호</em>를 탭해 줄을 고르십시오</p>
+<div class="btns">
+  <button type="button" class="btn" id="auto">아무 줄이나</button>
+  <button type="button" class="btn go" id="ride" disabled>타기</button>
+  <button type="button" class="btn" id="pass" hidden>다시 타기 (패스권 1장)</button>
+</div>
+<div class="result" id="result" hidden>
+  <div id="list"></div>
+  <div class="btns" id="rpsWrap" hidden><button type="button" class="btn red" id="rps">누구 걸로 할지 가위바위보</button></div>
+  <div class="final" id="final" hidden>
+    <div class="who" id="who"></div>
+    <div class="menu" id="menu"></div>
+    <div class="tags" id="tags"></div>
+    <div class="prep" id="prep"></div>
+    <div class="btns">
+      <a class="btn" id="map" href="#" target="_blank" rel="noopener" hidden>가까운 곳 지도</a>
+      <a class="btn" id="naver" href="#" target="_blank" rel="noopener">네이버 검색</a>
+      <a class="btn" id="yt" href="#" target="_blank" rel="noopener">유튜브</a>
+    </div>
+    <div class="btns"><button type="button" class="btn go" id="done">이번 주 미션 완료 도장</button></div>
+    <div class="stamps" id="stamps"></div>
+  </div>
+</div>
+<p class="foot">패스권은 한 장. 두 번째 결과는 무조건입니다. 한 것은 유튜브 댓글에 사진 한 장으로 인증. 다른 방: <a href="../cook/">집밥 회전판</a> · <a href="../wheel/">외식 회전판</a></p>
+<div class="yt"><a href="../">다른 방 보기</a><a class="sub" href="https://www.youtube.com/channel/UCss72-MAR4751_4vekHP4Hw?sub_confirmation=1" target="_blank" rel="noopener">유튜브 구독</a></div>
+
+<script>
+// 미션: n 이름, m 돈(무료|만 원|그 이상), t 시간, p 준비물, d 난이도(1~3), q 지도 검색어('' 이면 지도 단추 없음)
+const M={
+ "혼자":[
+  {n:"동네 한 바퀴 낯선 길로",m:"무료",t:"1시간",p:"운동화",d:1,q:""},
+  {n:"도서관에서 두 시간",m:"무료",t:"2시간",p:"읽던 책 또는 빈손",d:1,q:"도서관"},
+  {n:"동네 목욕탕 아침",m:"만 원",t:"1시간 반",p:"수건",d:1,q:"목욕탕"},
+  {n:"영화 조조 한 편",m:"만 원",t:"2시간 반",p:"예매",d:1,q:"영화관"},
+  {n:"재래시장 구경하고 간식 하나",m:"만 원",t:"1시간 반",p:"현금 만 원",d:1,q:"시장"},
+  {n:"자전거로 강변 한 시간",m:"무료",t:"1시간",p:"자전거 또는 따릉이",d:2,q:"자전거 대여"},
+  {n:"초급 산 정상 찍기",m:"무료",t:"3시간",p:"물·운동화",d:3,q:"둘레길"},
+  {n:"카페에서 책 한 권 절반",m:"만 원",t:"2시간",p:"책",d:1,q:"카페"},
+  {n:"박물관·미술관 무료 전시",m:"무료",t:"2시간",p:"편한 신발",d:2,q:"미술관"},
+  {n:"옷장 한 칸 비워 당근에 올리기",m:"무료",t:"1시간 반",p:"상자",d:2,q:""},
+  {n:"낮잠 30분 뒤 라면 제대로",m:"무료",t:"1시간",p:"라면·계란",d:1,q:""},
+  {n:"휴대폰 사진 100장 정리",m:"무료",t:"1시간",p:"휴대폰",d:2,q:""}],
+ "둘이":[
+  {n:"근교 한 시간 드라이브",m:"그 이상",t:"반나절",p:"차·간식",d:2,q:"드라이브 코스"},
+  {n:"전시 하나 정해서",m:"만 원",t:"2시간",p:"예매",d:2,q:"전시"},
+  {n:"시장 데이트, 서로 하나씩 사 주기",m:"만 원",t:"2시간",p:"현금",d:1,q:"시장"},
+  {n:"공원 돗자리 피크닉",m:"만 원",t:"3시간",p:"돗자리·김밥",d:1,q:"공원"},
+  {n:"초급 산 같이 오르기",m:"무료",t:"3시간",p:"물·운동화",d:3,q:"둘레길"},
+  {n:"온천·찜질방 반나절",m:"그 이상",t:"반나절",p:"수건",d:1,q:"찜질방"},
+  {n:"가고 싶던 식당 하나 드디어",m:"그 이상",t:"2시간",p:"예약",d:1,q:"맛집"},
+  {n:"보드게임 카페 두 판",m:"만 원",t:"2시간",p:"없음",d:1,q:"보드게임 카페"},
+  {n:"야경 보러 높은 데",m:"무료",t:"2시간",p:"겉옷",d:2,q:"전망대"},
+  {n:"카페 두 곳 비교하기",m:"만 원",t:"3시간",p:"없음",d:1,q:"카페"},
+  {n:"영화 한 편 + 감상 30분",m:"만 원",t:"3시간",p:"예매",d:1,q:"영화관"},
+  {n:"안 가 본 동네 골목 산책",m:"무료",t:"2시간",p:"운동화",d:1,q:""}],
+ "아이랑":[
+  {n:"공원에서 자전거·킥보드",m:"무료",t:"2시간",p:"헬멧·물",d:1,q:"공원"},
+  {n:"어린이도서관 그림책 다섯 권",m:"무료",t:"1시간 반",p:"대출증",d:1,q:"어린이도서관"},
+  {n:"시장 구경하고 간식 고르기",m:"만 원",t:"1시간 반",p:"현금",d:1,q:"시장"},
+  {n:"과학관·어린이박물관",m:"만 원",t:"3시간",p:"예약 확인",d:2,q:"어린이박물관"},
+  {n:"수목원 개장 시간에",m:"만 원",t:"3시간",p:"도시락·물",d:2,q:"수목원"},
+  {n:"실내 놀이터 두 시간",m:"그 이상",t:"2시간",p:"양말",d:1,q:"키즈카페"},
+  {n:"집에서 쿠키 굽기",m:"만 원",t:"2시간",p:"쿠키 믹스",d:2,q:""},
+  {n:"보드게임 또는 색칠 대회",m:"무료",t:"1시간",p:"있는 것",d:1,q:""},
+  {n:"동물원·목장 체험",m:"그 이상",t:"반나절",p:"모자·물",d:2,q:"동물원"},
+  {n:"당일 캠핑장에서 라면",m:"그 이상",t:"반나절",p:"버너·라면",d:3,q:"캠핑장"},
+  {n:"계절 놀이(물·낙엽·눈)",m:"무료",t:"2시간",p:"갈아입을 옷",d:2,q:"공원"},
+  {n:"동네 탐험 지도 그리기",m:"무료",t:"1시간 반",p:"종이·크레파스",d:1,q:""}],
+ "집에서":[
+  {n:"드라마 한 시즌 정주행",m:"무료",t:"반나절",p:"간식",d:1,q:""},
+  {n:"보드게임·화투 한 판",m:"무료",t:"1시간",p:"있는 것",d:1,q:""},
+  {n:"안 해 본 요리 하나",m:"만 원",t:"2시간",p:"재료",d:2,q:""},
+  {n:"대청소 한 구역만",m:"무료",t:"1시간",p:"걸레",d:2,q:""},
+  {n:"낮잠, 알람 없이",m:"무료",t:"2시간",p:"암막",d:1,q:""},
+  {n:"반신욕 30분",m:"무료",t:"1시간",p:"입욕제",d:1,q:""},
+  {n:"책 한 권 끝까지",m:"무료",t:"3시간",p:"책",d:2,q:""},
+  {n:"홈트 30분",m:"무료",t:"30분",p:"매트",d:2,q:""},
+  {n:"온라인 전시·공연 보기",m:"무료",t:"1시간 반",p:"TV 연결",d:1,q:""},
+  {n:"사진 100장 정리·인화 주문",m:"만 원",t:"1시간 반",p:"휴대폰",d:2,q:""},
+  {n:"화분 하나 들이기",m:"만 원",t:"1시간",p:"화분·흙",d:1,q:"화원"},
+  {n:"뭐든 하나 만들기(뜨개·목공·종이)",m:"만 원",t:"2시간",p:"재료",d:2,q:""}],
+ "조용히":[
+  {n:"새벽 시장 여섯 시",m:"만 원",t:"1시간 반",p:"현금",d:2,q:"시장"},
+  {n:"토요일 아침 여덟 시 산",m:"무료",t:"2시간",p:"물",d:2,q:"둘레길"},
+  {n:"절이나 성당 마당 한 바퀴",m:"무료",t:"1시간",p:"없음",d:1,q:"사찰"},
+  {n:"수목원 개장 시간에",m:"만 원",t:"2시간",p:"편한 신발",d:1,q:"수목원"},
+  {n:"도서관 열람실 두 시간",m:"무료",t:"2시간",p:"책",d:1,q:"도서관"},
+  {n:"동네 목욕탕 첫 손님",m:"만 원",t:"1시간 반",p:"수건",d:1,q:"목욕탕"},
+  {n:"낚시터에서 반나절",m:"그 이상",t:"반나절",p:"의자·간식",d:2,q:"낚시터"},
+  {n:"주말농장·텃밭 체험",m:"만 원",t:"3시간",p:"장갑·모자",d:2,q:"주말농장"},
+  {n:"박물관 개관 직후 30분",m:"무료",t:"1시간 반",p:"없음",d:1,q:"박물관"},
+  {n:"강변 자전거 아침",m:"무료",t:"1시간",p:"자전거",d:2,q:"자전거 대여"},
+  {n:"시골 장날 찾아가기",m:"만 원",t:"반나절",p:"현금·장바구니",d:2,q:"오일장"},
+  {n:"온천 오전 첫 타임",m:"그 이상",t:"3시간",p:"수건",d:1,q:"온천"}]
+};
+const PC=['--p1','--p2','--p3','--p4'];
+const cv=document.getElementById('ladder'),ctx=cv.getContext('2d');
+const hint=document.getElementById('hint'),result=document.getElementById('result'),list=document.getElementById('list'),rpsWrap=document.getElementById('rpsWrap'),final=document.getElementById('final');
+let cat='혼자',np=1,R=5,H=9,rungs=[],slots=[],assign=[],paths=[],state='pick',passUsed=false,prog=[],outcome=[];
+const W=cv.width,Hh=cv.height,TOP=110,BOT=760,LEFT=90,RIGHT=W-90;
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function rnd(n){const u=new Uint32Array(1);crypto.getRandomValues(u);return u[0]%n}
+function railX(i){return LEFT+(RIGHT-LEFT)*i/(R-1)}
+function rowY(y){return TOP+(BOT-TOP)*(y+1)/(H+1)}
+function build(){
+  rungs=[]; for(let y=0;y<H;y++){const row=[]; for(let i=0;i<R-1;i++){ const left=row[i-1]; row.push(!left && rnd(100)<38);} rungs.push(row);}
+  const pool=M[cat].slice(); slots=[]; for(let i=0;i<R;i++){ slots.push(pool.splice(rnd(pool.length),1)[0]); }
+  assign=Array(R).fill(-1); paths=[]; prog=[]; outcome=[]; state='pick'; result.hidden=true; final.hidden=true; rpsWrap.hidden=true;
+  document.getElementById('ride').disabled=true; document.getElementById('pass').hidden=true;
+  hint.innerHTML=np===1?'위의 <em>번호</em>를 탭해 줄을 고르십시오':'사람 수만큼 위의 <em>번호</em>를 탭하십시오 ('+np+'명)';
+  draw();
+}
+function trace(r){ const pts=[[railX(r),TOP]]; let c=r; for(let y=0;y<H;y++){ const yy=rowY(y); pts.push([railX(c),yy]); if(rungs[y][c]){c++; pts.push([railX(c),yy]);} else if(c>0&&rungs[y][c-1]){c--; pts.push([railX(c),yy]);} } pts.push([railX(c),BOT]); return {pts,end:c}; }
+function draw(){
+  ctx.clearRect(0,0,W,Hh); ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle=css('--line'); ctx.lineWidth=6;
+  for(let i=0;i<R;i++){ ctx.beginPath(); ctx.moveTo(railX(i),TOP); ctx.lineTo(railX(i),BOT); ctx.stroke(); }
+  for(let y=0;y<H;y++) for(let i=0;i<R-1;i++) if(rungs[y][i]){ ctx.beginPath(); ctx.moveTo(railX(i),rowY(y)); ctx.lineTo(railX(i+1),rowY(y)); ctx.stroke(); }
+  // 위 번호 원
+  for(let i=0;i<R;i++){ const p=assign[i]; ctx.beginPath(); ctx.arc(railX(i),TOP-40,30,0,Math.PI*2); ctx.fillStyle=p>=0?css(PC[p]):css('--card'); ctx.fill(); ctx.strokeStyle=p>=0?css(PC[p]):css('--ink'); ctx.lineWidth=4; ctx.stroke();
+    ctx.fillStyle=p>=0?'#fff':css('--ink'); ctx.font='bold 30px "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(p>=0?(p+1)+'':(i+1)+'',railX(i),TOP-40); }
+  // 아래 미션 상자
+  for(let i=0;i<R;i++){ const done=outcome.find(o=>o.end===i); const x=railX(i); ctx.fillStyle=done?css(PC[done.p]):css('--bg'); ctx.strokeStyle=css('--line'); ctx.lineWidth=3;
+    roundRect(x-62,BOT+18,124,96,14); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=done?'#fff':css('--muted'); ctx.font=(done?'bold 22px':'bold 40px')+' "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(done){ wrapText(shortName(slots[i].n),x,BOT+66,110,26);} else ctx.fillText('?',x,BOT+66); }
+  // 진행 중 경로
+  for(let k=0;k<paths.length;k++){ const pr=prog[k]||0; if(pr<=0)continue; const pts=paths[k].pts; ctx.strokeStyle=css(PC[k]); ctx.lineWidth=10; ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); const n=Math.floor(pr); for(let j=1;j<=Math.min(n,pts.length-1);j++) ctx.lineTo(pts[j][0],pts[j][1]); if(n<pts.length-1){ const a=pts[n],b=pts[n+1],f=pr-n; ctx.lineTo(a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f);} ctx.stroke(); }
+}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function shortName(s){return s.length>14?s.slice(0,13)+'…':s}
+function wrapText(t,x,y,maxw,lh){ const words=t.split(' '); let line='',lines=[]; for(const w of words){const c=(line+' '+w).trim(); if(ctx.measureText(c).width>maxw&&line){lines.push(line);line=w;}else line=c;} lines.push(line); const y0=y-(lines.length-1)*lh/2; lines.forEach((l,i)=>ctx.fillText(l,x,y0+i*lh)); }
+cv.addEventListener('click',e=>{
+  if(state!=='pick')return; const rect=cv.getBoundingClientRect(); const x=(e.clientX-rect.left)*W/rect.width, y=(e.clientY-rect.top)*Hh/rect.height;
+  if(y>TOP+10)return; let best=-1,bd=1e9; for(let i=0;i<R;i++){const d=Math.abs(x-railX(i)); if(d<bd){bd=d;best=i;}} if(bd>60)return;
+  if(assign[best]>=0){ assign[best]=-1; } else { const used=assign.filter(v=>v>=0).length; if(used>=np)return; let p=0; while(assign.includes(p))p++; assign[best]=p; }
+  const used=assign.filter(v=>v>=0).length; document.getElementById('ride').disabled=used<np;
+  hint.innerHTML=used<np?'앞으로 '+(np-used)+'명 더 고르십시오':'<em>타기</em>를 누르십시오'; draw();
+});
+document.getElementById('auto').addEventListener('click',()=>{ if(state!=='pick')return; assign=Array(R).fill(-1); const free=[0,1,2,3,4]; for(let p=0;p<np;p++){ const i=free.splice(rnd(free.length),1)[0]; assign[i]=p; } document.getElementById('ride').disabled=false; hint.innerHTML='<em>타기</em>를 누르십시오'; draw(); });
+document.getElementById('ride').addEventListener('click',ride);
+function ride(){
+  if(state!=='pick')return; state='riding'; document.getElementById('ride').disabled=true; document.getElementById('auto').disabled=true;
+  paths=[]; for(let p=0;p<np;p++){ const r=assign.indexOf(p); paths.push(trace(r)); } prog=paths.map(()=>0); outcome=[];
+  hint.textContent='타는 중…'; let k=0; let last=performance.now();
+  function step(ts){ const dt=(ts-last)/1000; last=ts; if(k>=paths.length){ finishRide(); return; }
+    const total=paths[k].pts.length-1; prog[k]=Math.min(total,prog[k]+dt*total/2.2); draw();
+    if(prog[k]>=total){ outcome.push({p:k,end:paths[k].end,m:slots[paths[k].end]}); k++; draw(); }
+    requestAnimationFrame(step); }
+  requestAnimationFrame(step);
+}
+function finishRide(){
+  state='done'; list.innerHTML=''; result.hidden=false;
+  outcome.forEach(o=>{ const d=document.createElement('div'); d.className='pl'; d.innerHTML='<span class="dot" style="background:'+css(PC[o.p])+'"></span><span>'+(np>1?(o.p+1)+'번: ':'')+o.m.n+'</span>'; list.appendChild(d); });
+  if(np>1){ rpsWrap.hidden=false; final.hidden=true; hint.innerHTML=np+'개가 나왔습니다. <em>가위바위보</em>로 하나만'; }
+  else { showFinal(outcome[0],'사다리가 정한 것'); hint.innerHTML='오늘은 <em>'+outcome[0].m.n+'</em>'; }
+  document.getElementById('pass').hidden=passUsed; document.getElementById('auto').disabled=false;
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.getElementById('rps').addEventListener('click',()=>{
+  const btn=document.getElementById('rps'); btn.disabled=true; const seq=['가위…','바위…','보!']; let i=0;
+  const t=setInterval(()=>{ btn.textContent=seq[i++]; if(i>=seq.length){ clearInterval(t); const w=outcome[rnd(outcome.length)]; btn.textContent=(w.p+1)+'번 승리!'; [...list.children].forEach((el,j)=>el.classList.toggle('win',j===outcome.indexOf(w))); showFinal(w,(w.p+1)+'번이 이겼습니다'); } },450);
+});
+function showFinal(o,who){
+  final.hidden=false; document.getElementById('who').textContent=who; document.getElementById('menu').textContent=o.m.n;
+  const tags=document.getElementById('tags'); tags.innerHTML=''; [['money',o.m.m],['',o.m.t],['','난이도 '+'★'.repeat(o.m.d)]].forEach(([c,v])=>{const s=document.createElement('span'); s.className='tag '+c; s.textContent=v; tags.appendChild(s);});
+  document.getElementById('prep').textContent='준비물: '+o.m.p;
+  const map=document.getElementById('map'); if(o.m.q){ map.hidden=false; map.href='https://map.naver.com/p/search/'+encodeURIComponent('근처 '+o.m.q); } else map.hidden=true;
+  document.getElementById('naver').href='https://search.naver.com/search.naver?query='+encodeURIComponent(o.m.n);
+  document.getElementById('yt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(o.m.n);
+  renderStamps();
+}
+document.getElementById('pass').addEventListener('click',()=>{ if(passUsed)return; passUsed=true; document.getElementById('pass').hidden=true; build(); hint.innerHTML='패스권을 썼습니다. 이번엔 <em>무조건</em>입니다. 줄을 고르십시오'; });
+// 도장판(이 폰에만 저장)
+function weekKey(){ const d=new Date(); const s=new Date(d.getFullYear(),0,1); const w=Math.floor(((d-s)/86400000+s.getDay()+1)/7); return d.getFullYear()+'-'+w; }
+function loadStamps(){ try{ return JSON.parse(localStorage.getItem('wk_stamps')||'[]'); }catch(e){ return []; } }
+function renderStamps(){ const st=loadStamps(); const box=document.getElementById('stamps'); box.innerHTML=''; const lab=document.createElement('span'); lab.textContent='도장판'; box.appendChild(lab); for(let i=0;i<4;i++){ const s=document.createElement('div'); s.className='stamp'+(i<st.length?' on':''); s.textContent=i<st.length?'✓':''; box.appendChild(s);} if(st.length>=4){ const b=document.createElement('span'); b.textContent='주말 마스터!'; b.style.fontWeight='700'; b.style.color=css('--ink'); box.appendChild(b);} }
+document.getElementById('done').addEventListener('click',()=>{ try{ const st=loadStamps(); const k=weekKey(); if(!st.includes(k)){ st.push(k); if(st.length>4) st.shift(); localStorage.setItem('wk_stamps',JSON.stringify(st)); } }catch(e){} renderStamps(); document.getElementById('done').textContent='이번 주 도장 찍음'; });
+document.getElementById('cats').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||state==='riding')return; document.querySelectorAll('#cats .chip').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); cat=b.dataset.cat; build(); });
+document.getElementById('players').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||state==='riding')return; document.querySelectorAll('#players .chip').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); np=+b.dataset.n; build(); });
+document.fonts?.ready.then(draw); build();
+</script>
+</body>
+</html>
