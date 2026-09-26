@@ -27,6 +27,7 @@ h1{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-s
 .chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .stage{width:min(92vw,400px);max-width:100%}
 canvas{width:100%;display:block;border-radius:16px;background:var(--card);border:1px solid var(--line);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.rules{margin:0;font-size:14px;color:var(--muted);text-align:center;max-width:380px;line-height:1.5}
 .hint{font-size:17px;font-weight:700;text-align:center;margin:0;min-height:1.4em}
 .hint em{font-style:normal;color:var(--accent);background:var(--ink);padding:0 6px;border-radius:4px}
 .btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -55,6 +56,7 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
 <body>
 <p class="brandline"><a href="../">무엇이든 정해드림</a> · 無를 有로</p>
 <h1>주말에 뭐 하지?</h1>
+<p class="rules">누구와 · 몇 명 고르기 → 줄 고르기 → 타기 → 여럿이면 가위바위보 → 나온 미션 하기. 패스권은 한 장.</p>
 <div class="row" id="cats" role="group" aria-label="누구와">
   <button type="button" class="chip" data-cat="혼자" aria-pressed="true">혼자</button>
   <button type="button" class="chip" data-cat="둘이" aria-pressed="false">둘이</button>
@@ -88,8 +90,9 @@ canvas{width:100%;display:block;border-radius:16px;background:var(--card);border
       <a class="btn" id="naver" href="#" target="_blank" rel="noopener">네이버 검색</a>
       <a class="btn" id="yt" href="#" target="_blank" rel="noopener">유튜브</a>
     </div>
-    <div class="btns"><button type="button" class="btn go" id="done">이번 주 미션 완료 도장</button></div>
+    <div class="btns"><button type="button" class="btn go" id="done">미션 하고 왔어요 → 도장</button></div>
     <div class="stamps" id="stamps"></div>
+    <div class="prep">미션을 실제로 하고 오시면 도장을 찍으십시오. 한 주에 하나, 네 주를 채우면 <b>주말 마스터</b>. 도장은 이 폰에만 남고 어디로도 보내지 않습니다.</div>
   </div>
 </div>
 <p class="foot">패스권은 한 장. 두 번째 결과는 무조건입니다. 한 것은 유튜브 댓글에 사진 한 장으로 인증. 다른 방: <a href="../cook/">집밥 회전판</a> · <a href="../wheel/">외식 회전판</a></p>
@@ -246,7 +249,7 @@ document.getElementById('pass').addEventListener('click',()=>{ if(passUsed)retur
 function weekKey(){ const d=new Date(); const s=new Date(d.getFullYear(),0,1); const w=Math.floor(((d-s)/86400000+s.getDay()+1)/7); return d.getFullYear()+'-'+w; }
 function loadStamps(){ try{ return JSON.parse(localStorage.getItem('wk_stamps')||'[]'); }catch(e){ return []; } }
 function renderStamps(){ const st=loadStamps(); const box=document.getElementById('stamps'); box.innerHTML=''; const lab=document.createElement('span'); lab.textContent='도장판'; box.appendChild(lab); for(let i=0;i<4;i++){ const s=document.createElement('div'); s.className='stamp'+(i<st.length?' on':''); s.textContent=i<st.length?'✓':''; box.appendChild(s);} if(st.length>=4){ const b=document.createElement('span'); b.textContent='주말 마스터!'; b.style.fontWeight='700'; b.style.color=css('--ink'); box.appendChild(b);} }
-document.getElementById('done').addEventListener('click',()=>{ try{ const st=loadStamps(); const k=weekKey(); if(!st.includes(k)){ st.push(k); if(st.length>4) st.shift(); localStorage.setItem('wk_stamps',JSON.stringify(st)); } }catch(e){} renderStamps(); document.getElementById('done').textContent='이번 주 도장 찍음'; });
+document.getElementById('done').addEventListener('click',()=>{ try{ const st=loadStamps(); const k=weekKey(); if(!st.includes(k)){ st.push(k); if(st.length>4) st.shift(); localStorage.setItem('wk_stamps',JSON.stringify(st)); } }catch(e){} renderStamps(); document.getElementById('done').textContent='이번 주 도장 찍었습니다'; });
 document.getElementById('cats').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||state==='riding')return; document.querySelectorAll('#cats .chip').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); cat=b.dataset.cat; build(); });
 document.getElementById('players').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||state==='riding')return; document.querySelectorAll('#players .chip').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); np=+b.dataset.n; build(); });
 document.fonts?.ready.then(draw); build();
