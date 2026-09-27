@@ -12,6 +12,8 @@
   --bg:#fbf7ef; --ink:#1d1a16; --muted:#6b645a; --line:#e6ded0;
   --accent:#e8b400; --accent-ink:#1d1a16; --card:#ffffff; --red:#e0453a; --green:#2a9d8f; --blue:#2b7fd1;
   --mark:#ffe08a;
+  --w1:#e0453a;--w2:#f28c28;--w3:#f2c12e;--w4:#5cb85c;--w5:#2a9d8f;--w6:#2b7fd1;
+  --w7:#6a4fc9;--w8:#c2409a;--w9:#8a5a2b;--w10:#3aa6b9;--w11:#d95f80;--w12:#7c9a2f;
 }
 @media (prefers-color-scheme: dark){
   :root{ color-scheme:dark; --bg:#17150f; --ink:#f3ede2; --muted:#a79f92; --line:#33302a; --card:#221f19; --mark:#6b5300; }
@@ -60,6 +62,43 @@ textarea{width:100%;min-height:150px;box-sizing:border-box;border:1px solid var(
 .src b{color:var(--ink)}
 .foot{font-size:13px;color:var(--muted);text-align:center;margin:0}.foot a{color:var(--ink);font-weight:700}
 .yt{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.yt a{font-weight:700;font-size:15px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none}.yt a.sub2{background:#e0453a;color:#fff;border-color:#e0453a}
+
+/* ── 색 입히기 ── */
+h1{background:linear-gradient(90deg,var(--w1),var(--w2),var(--w3),var(--w4),var(--w6),var(--w7));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cats button{border-width:2px}
+.cats button[data-cat="doc"]{border-color:var(--w6);color:var(--w6)}
+.cats button[data-cat="research"]{border-color:var(--w4);color:var(--w4)}
+.cats button[data-cat="data"]{border-color:var(--w7);color:var(--w7)}
+.cats button[data-cat="plan"]{border-color:var(--w2);color:var(--w2)}
+.cats button[aria-pressed="true"][data-cat="doc"]{background:var(--w6);color:#fff}
+.cats button[aria-pressed="true"][data-cat="research"]{background:var(--w4);color:#fff}
+.cats button[aria-pressed="true"][data-cat="data"]{background:var(--w7);color:#fff}
+.cats button[aria-pressed="true"][data-cat="plan"]{background:var(--w2);color:#fff}
+.card{border-top:6px solid var(--w6)}
+.card.c2{border-top-color:var(--w7)}.card.c3{border-top-color:var(--w3)}.card.c4{border-top-color:var(--w5)}
+.card h2{color:var(--ink);font-size:17px;display:flex;align-items:center;gap:8px}
+.card h2::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--w6);display:inline-block}
+.card.c2 h2::before{background:var(--w7)}.card.c3 h2::before{background:var(--w3)}.card.c4 h2::before{background:var(--w5)}
+.chip{color:#fff;border:0}
+.chip.bad{background:var(--w1);color:#fff}.chip.ok{background:var(--w4);color:#fff}.chip:not(.bad):not(.ok){background:var(--w10)}
+.preview mark.num{background:#ffd6d2;outline:2px solid var(--w1);color:#7a1c14}
+.preview mark.auth{background:#ffe3c2;color:#7a3c00}
+.preview mark.abs{background:#e6dcff;color:#3b2a80}
+.q .row{align-items:flex-start}
+.q .num{flex:none;width:28px;height:28px;border-radius:50%;color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center;margin-right:2px}
+.q .row:nth-child(1) .num{background:var(--w1)}.q .row:nth-child(2) .num{background:var(--w2)}.q .row:nth-child(3) .num{background:var(--w3);color:var(--ink)}
+.q .row:nth-child(4) .num{background:var(--w4)}.q .row:nth-child(5) .num{background:var(--w5)}.q .row:nth-child(6) .num{background:var(--w6)}.q .row:nth-child(7) .num{background:var(--w7)}
+.q .txt{display:flex;flex-direction:column}
+.verdict{border-top:0;padding-top:0;overflow:hidden}
+.verdict .band{width:calc(100% + 32px);margin:-16px -16px 0;padding:18px 16px;color:#fff;text-align:center}
+.verdict .band.ok{background:linear-gradient(135deg,var(--w4),var(--w5))}
+.verdict .band.fix{background:linear-gradient(135deg,var(--w2),var(--w3))}
+.verdict .band.redo{background:linear-gradient(135deg,var(--w1),var(--w8))}
+.verdict .band h2{color:#fff;justify-content:center}.verdict .band h2::before{background:#fff}
+.verdict .band .big{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.25)}
+.lesson{background:var(--ink);color:#fff;padding:12px 16px;border-radius:14px}
+.lesson em{background:var(--w3);color:var(--ink)}
+.src b{color:var(--w6)}
 </style>
 </head>
 <body>
@@ -86,14 +125,13 @@ textarea{width:100%;min-height:150px;box-sizing:border-box;border:1px solid var(
     <div class="preview" id="preview" hidden></div>
   </section>
 
-  <section class="card" id="qcard" hidden>
+  <section class="card c2" id="qcard" hidden>
     <h2>2. 올리기 전 일곱 가지</h2>
     <div class="q" id="q"></div>
   </section>
 
-  <section class="card verdict" id="vcard" hidden>
-    <h2>3. 판정</h2>
-    <div class="big" id="vbig">—</div>
+  <section class="card c3 verdict" id="vcard" hidden>
+    <div class="band" id="vband"><h2>3. 판정</h2><div class="big" id="vbig">—</div></div>
     <div class="why" id="vwhy"></div>
     <div class="log" id="log"></div>
     <div class="actions">
@@ -104,7 +142,7 @@ textarea{width:100%;min-height:150px;box-sizing:border-box;border:1px solid var(
 
   <p class="lesson">만드는 건 AI, 책임은 사람. <em>30초 검수</em>가 내 자리입니다.</p>
 
-  <section class="card">
+  <section class="card c4">
     <h2>왜 이 일곱 가지인가</h2>
     <div class="src">
       <b>요즘 회사에서 일어나는 일</b><br>
@@ -168,8 +206,8 @@ function scan(){
   chips.hidden=false;
   let h=esc(s);
   h=h.replace(RX.num,m=>'<mark class="num">'+m+'</mark>');
-  h=h.replace(RX.auth,m=>'<mark>'+m+'</mark>');
-  h=h.replace(RX.abs,m=>'<mark>'+m+'</mark>');
+  h=h.replace(RX.auth,m=>'<mark class="auth">'+m+'</mark>');
+  h=h.replace(RX.abs,m=>'<mark class="abs">'+m+'</mark>');
   preview.innerHTML=h; preview.hidden=false;
   // 자동 힌트: 숫자 있는데 링크 없음 → src 아니오, 날짜 없음 → date 아니오
   for(const k in ans) delete ans[k];
@@ -182,7 +220,8 @@ function buildQ(){
   const box=$('q'); box.innerHTML='';
   Q.forEach((q,i)=>{
     const row=document.createElement('div'); row.className='row';
-    const t=document.createElement('div'); t.className='txt'; t.innerHTML=(i+1)+'. '+esc(q.k==='chk'?CATS[cat].q7:q.t)+'<small>'+esc(q.s)+'</small>';
+    const n=document.createElement('div'); n.className='num'; n.textContent=i+1; row.appendChild(n);
+    const t=document.createElement('div'); t.className='txt'; t.innerHTML=esc(q.k==='chk'?CATS[cat].q7:q.t)+'<small>'+esc(q.s)+'</small>';
     const yn=document.createElement('div'); yn.className='yn';
     [['y','예',true],['n','아니오',false]].forEach(([c,l,v])=>{
       const b=document.createElement('button'); b.type='button'; b.className=c; b.textContent=l;
@@ -202,7 +241,7 @@ function judge(){
   if(fails.length===0){v='그대로 올린다';cls='ok';why='일곱 가지 다 통과. 검수 기록을 남기고 올리십시오.';}
   else if(critFails.length>=3 || (ans.src===false && ans.chk===false)){v='다시 시킨다';cls='redo';why='핵심이 <b>'+critFails.length+'곳</b> 비었습니다. 고치는 것보다 출처·날짜·우리 회사 조건을 넣어 다시 시키는 게 빠릅니다.';}
   else {v='고쳐서 올린다';cls='fix';why='고칠 곳 <b>'+fails.length+'곳</b>: '+fails.map(q=>fixOf(q.k)).join(' · ');}
-  $('vbig').textContent=v; $('vbig').className='big '+cls; $('vwhy').innerHTML=why;
+  $('vbig').textContent=v; $('vbig').className='big'; $('vband').className='band '+cls; $('vwhy').innerHTML=why;
   const d=new Date(); const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   $('log').textContent='['+ds+'] AI 초안 검수('+CATS[cat].name+') · 판정: '+v+(fails.length?' · 고칠 곳: '+fails.map(q=>fixOf(q.k)).join(', '):' · 고칠 곳 없음')+' · 확인한 출처: (1) ______ (2) ______ · 검수자: ______';
   vcard.hidden=false; vcard.scrollIntoView({behavior:'smooth',block:'start'});
