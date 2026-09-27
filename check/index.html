@@ -99,6 +99,9 @@ h1{background:linear-gradient(90deg,var(--w1),var(--w2),var(--w3),var(--w4),var(
 .lesson{background:var(--ink);color:#fff;padding:12px 16px;border-radius:14px}
 .lesson em{background:var(--w3);color:var(--ink)}
 .src b{color:var(--w6)}
+.notice{margin:0;text-align:center;font-size:16px;font-weight:700;background:var(--w1);color:#fff;padding:10px 14px;border-radius:12px}
+.notice a{color:#fff;text-decoration:underline;text-underline-offset:3px;background:var(--w3);color:var(--ink);padding:2px 8px;border-radius:6px;text-decoration:none;font-weight:700}
+.notice a:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .howto summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
 .howto summary::-webkit-details-marker{display:none}
 .howto summary::after{content:"펼치기 ▾";font-size:13px;color:var(--muted);font-weight:700}
@@ -116,8 +119,9 @@ h1{background:linear-gradient(90deg,var(--w1),var(--w2),var(--w3),var(--w4),var(
 <p class="sub">요즘 회사, AI가 쓴 보고서 그대로 올릴지 정해드림.<br>붙여넣으면 <b>걸리는 곳</b>을 먼저 잡고, 질문 7개로 판정합니다. 글은 저장되지 않습니다.</p>
 
 <div class="wrap">
-  <details class="card c4 howto">
-    <summary><h2>사용법 (30초)</h2></summary>
+  <p class="notice">시작 전에 <a href="#howto" id="openhow">설명서</a>를 반드시 읽고 하십시오.</p>
+  <details class="card c4 howto" id="howto">
+    <summary><h2>설명서 · 사용법 (30초)</h2></summary>
     <ol>
       <li><b>업무 종류</b>를 고릅니다. 문서 작성·자료 조사·데이터 분석·기획 중 하나. 7번 질문만 달라집니다.</li>
       <li>AI가 써 준 글을 <b>붙여넣고</b> <b>걸리는 곳 찾기</b>를 누릅니다. 글은 저장되지 않습니다.</li>
@@ -272,6 +276,7 @@ function judge(){
 }
 const HOW={src:'숫자마다 (출처: 기관·연도·링크)를 붙이십시오. 출처를 못 찾으면 그 숫자를 지우고 "확인 필요"로 남깁니다.',date:'자료 연도를 문장에 적으십시오. 1년 넘은 자료면 최신 자료로 바꾸거나 "○○년 기준"을 밝힙니다.',expl:'핵심 3문장을 내 말로 다시 쓰십시오. 못 쓰는 문단은 빼거나 AI에 "근거를 대라"고 다시 시킵니다.',oppo:'"다만 ~ 위험이 있다" 한 줄을 넣으십시오. 반대 근거가 있으면 그것도 한 줄.',ctx:'우리 회사 조건(예산·인력·규정·고객)을 한 줄 넣고, 안 맞는 제안은 지우십시오.',resp:'올리기 전 담당자·팀장에게 "AI 초안을 제가 검수했다"고 알리십시오. 책임자가 정해집니다.',chk:'인용된 출처 두 개를 직접 열어 숫자·날짜가 맞는지 보십시오. 하나라도 틀리면 다시 시킵니다.'};
 function fixOf(k){return {src:'숫자 출처 달기',date:'자료 날짜 최신으로',expl:'내 말로 다시 쓰기',oppo:'반대 의견·위험 한 줄',ctx:'우리 회사 조건 반영',resp:'책임자 확인',chk:'원문 두 군데 직접 확인'}[k];}
+$('openhow').addEventListener('click',e=>{e.preventDefault();const h=$('howto');h.open=true;h.scrollIntoView({behavior:'smooth',block:'start'});});
 $('scan').addEventListener('click',scan);
 $('clear').addEventListener('click',()=>{txt.value='';chips.hidden=true;preview.hidden=true;qcard.hidden=true;vcard.hidden=true;for(const k in ans)delete ans[k];});
 $('again').addEventListener('click',()=>{$('clear').click();window.scrollTo({top:0,behavior:'smooth'});txt.focus();});
