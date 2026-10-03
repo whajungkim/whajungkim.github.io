@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>근거 방 · 무엇이든 정해드림</title>
+<meta name="description" content="영상 속 숫자, 원문까지. 시사 편마다 다섯 가지와 기관 발표·기사 출처를 그대로 모았습니다.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap">
+<style>
+:root{ --bg:#fbf7ef; --ink:#1d1a16; --muted:#6b645a; --line:#e6ded0; --accent:#e8b400; --card:#ffffff; --red:#e0453a; --soft:#fff6d6; }
+@media (prefers-color-scheme: dark){ :root{ color-scheme:dark; --bg:#17150f; --ink:#f3ede2; --muted:#a79f92; --line:#33302a; --card:#221f19; --soft:#2c2614; } }
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;padding:24px 16px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;line-height:1.6}
+a{color:inherit}
+.top{width:min(100%,640px);display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.top a{color:var(--muted);text-decoration:none}
+h1{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-size:clamp(36px,10vw,52px);line-height:1.1;margin:4px 0 0;text-align:center}
+.lead{margin:0;text-align:center;font-size:17px;font-weight:700}
+.lead b{color:var(--red)}
+.how{width:min(100%,640px);box-sizing:border-box;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:15px;color:var(--ink)}
+.how ul{margin:6px 0 0;padding-left:20px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.tabs button{font:inherit;font-weight:700;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#1d1a16}
+.list{width:min(100%,640px);display:flex;flex-direction:column;gap:14px}
+.ep{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-sizing:border-box}
+.ep header{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.ep .g{background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-weight:700}
+.ep h2{font-size:20px;line-height:1.35;margin:8px 0 6px}
+.five{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.five li{padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line);overflow-wrap:anywhere}
+.st{margin:10px 0 0;font-size:14.5px;padding:8px 10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:6px}
+.st b{margin-right:6px}
+details{margin-top:10px;font-size:14.5px}
+summary{cursor:pointer;font-weight:700}
+.src{margin:6px 0 0;padding-left:20px;overflow-wrap:anywhere}
+.yt{display:inline-block;margin-top:12px;font-weight:700;font-size:15px;padding:9px 16px;border-radius:10px;background:var(--red);color:#fff;text-decoration:none}
+.empty{color:var(--muted);text-align:center}
+footer{width:min(100%,640px);font-size:13px;color:var(--muted);text-align:center}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<nav class="top"><a href="../">← 무엇이든 정해드림</a><span></span></nav>
+<h1>근거 방</h1>
+<p class="lead">영상 속 숫자, <b>원문</b>까지.</p>
+<div class="how">
+  시사 편마다 영상에서 말한 다섯 가지를 설명란 그대로 옮기고, 기관 발표·기사 원문을 붙였습니다.
+  <ul>
+    <li>숫자는 기관이 발표한 값 그대로입니다. 잠정치는 잠정치라고 적습니다.</li>
+    <li>특정 정부나 정당을 평가하지 않습니다.</li>
+    <li>틀린 곳이나 더 새로운 발표가 있으면 영상 댓글로 알려 주세요. 고치면 아래 「고친 기록」에 남깁니다.</li>
+  </ul>
+</div>
+<div class="tabs" role="group" aria-label="묶음">
+  <button type="button" data-f="all" aria-pressed="true">전체</button>
+  <button type="button" data-f="CPTPP" aria-pressed="false">CPTPP</button>
+  <button type="button" data-f="특집" aria-pressed="false">특집</button>
+</div>
+<main class="list" id="list">
+%CARDS%
+<p class="empty" id="empty" hidden>아직 공개된 편이 없습니다.</p>
+</main>
+<footer>
+  <p><b>고친 기록</b><br>2026.10.04 근거 방 열림. CPTPP 2~5편 설명란에 "가입 미결정·의견 수렴 중·잠정치" 문장 추가(10.03).</p>
+  <p>무엇이든 정해드림 · 마지막 갱신 %BUILT%</p>
+</footer>
+<script>
+(function(){
+  var now=Date.now(), cards=[].slice.call(document.querySelectorAll('.ep'));
+  cards.forEach(function(c){ if(new Date(c.dataset.pub).getTime()>now) c.remove(); });
+  cards=[].slice.call(document.querySelectorAll('.ep'));
+  var btns=[].slice.call(document.querySelectorAll('.tabs button'));
+  function show(f){
+    var n=0;
+    cards.forEach(function(c){ var on=(f==='all'||c.dataset.grp===f); c.hidden=!on; if(on) n++; });
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.f===f)); });
+    document.getElementById('empty').hidden=n>0;
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.f); }); });
+  show('all');
+})();
+</script>
+</body>
+</html>
