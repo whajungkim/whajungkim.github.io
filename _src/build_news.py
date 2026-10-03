@@ -42,8 +42,18 @@ def items_of(s):
     return [l.strip() for l in (m.group(1).split("\n") if m else []) if re.match(r"^\d\.", l.strip())]
 
 
+BAD = {"https://www.nihhs.go.kr/farmer/statistics/statistics.do"}  # 직접 링크로 열리지 않음(400, 10-04 확인)
+
+
+def evidence_part(s):
+    """제목에 '근거'가 든 절(## 근거 / ## 근거표 / ## 4. 근거표 …)만 — 다른 절의 링크가 섞이지 않게"""
+    parts = re.findall(r"^##[^\n]*근거[^\n]*\n(.*?)(?=^## |\Z)", s, re.S | re.M)
+    return "\n".join(parts)
+
+
 def links_of(s):
-    out, seen = [], set()
+    s = evidence_part(s)
+    out, seen = [], set(BAD)
     for t, u in re.findall(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", s):
         if u not in seen: seen.add(u); out.append((t, u))
     for u in re.findall(r"(?<![(\[])(https?://[^\s)|·]+)", s):
